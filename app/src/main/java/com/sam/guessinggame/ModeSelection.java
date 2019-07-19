@@ -14,6 +14,7 @@ public class ModeSelection extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.mode_selection);
         context = this;
     }
 

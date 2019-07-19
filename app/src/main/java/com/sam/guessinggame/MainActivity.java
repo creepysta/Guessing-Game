@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -17,8 +16,6 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText name_et;
     private EditText pass_et;
-    private Button login_bt;
-    private Button reg_bt;
 
     private Context context;
 
@@ -29,8 +26,6 @@ public class MainActivity extends AppCompatActivity {
 
         name_et = findViewById(R.id.name_main_et);
         pass_et = findViewById(R.id.pass_main_et);
-        login_bt = findViewById(R.id.login_main_bt);
-        reg_bt = findViewById(R.id.reg_main_bt);
 
         context = this;
 
@@ -38,11 +33,21 @@ public class MainActivity extends AppCompatActivity {
 
     public void loginAction(View view) {
 
+//        Intent intent = new Intent(this,GameOver.class);
+//        startActivity(intent);
+
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<Player> playerAccnt = realm.where(Player.class).equalTo("name", name_et.getText().toString()).and().equalTo("pass", pass_et.getText().toString()).findAll();
-        if(playerAccnt.size() == 1) {
-            Intent intent = new Intent(context, ModeSelection.class);
-            startActivity(intent);
+        try {
+            RealmResults<Player> playerAccnt = realm.where(Player.class).equalTo("name", name_et.getText().toString()).and().equalTo("pass", pass_et.getText().toString()).findAll();
+            if (playerAccnt.size() == 1) {
+                Intent intent = new Intent(context, ModeSelection.class);
+                startActivity(intent);
+            } else {
+                setContentView(R.layout.activity_main);
+                Toast.makeText(context, "Username and password doesn't match.", Toast.LENGTH_SHORT).show();
+            }
+        } catch(Exception e) {
+            Toast.makeText(context, "Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -54,14 +59,13 @@ public class MainActivity extends AppCompatActivity {
         try{
             RealmResults<Player> id = realm.where(Player.class).equalTo("name", name_et.getText().toString()).findAll();
             if (id.size() != 0) {
-//                Toast.makeText(context, "USERNAME: " + name_et.getText().toString() + " already exists.", Toast.LENGTH_SHORT).show();
                 throw new Exception("USERNAME: " + name_et.getText().toString() + " already exists.");
 
             }
 
             Player player = realm.createObject(Player.class, System.currentTimeMillis() / 1000);
             player.setName(name_et.getText().toString());
-            player.setPassword(pass_et.getText().toString());
+            player.setPass(pass_et.getText().toString());
 
             realm.commitTransaction();
 

@@ -24,6 +24,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if(getIntent().getBooleanExtra("exit", false)) {
+            finish();
+        }
+
+
         name_et = findViewById(R.id.name_main_et);
         pass_et = findViewById(R.id.pass_main_et);
 
@@ -32,13 +37,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void loginAction(View view) {
-
+//
 //        Intent intent = new Intent(this,GameOver.class);
 //        startActivity(intent);
 
         Realm realm = Realm.getDefaultInstance();
         try {
-            RealmResults<Player> playerAccnt = realm.where(Player.class).equalTo("name", name_et.getText().toString()).and().equalTo("pass", pass_et.getText().toString()).findAll();
+            RealmResults<Player> playerAccnt = realm.where(Player.class)
+                                                    .equalTo("name", name_et.getText().toString())
+                                                    .and().equalTo("pass", pass_et.getText().toString())
+                                                    .findAll();
             if (playerAccnt.size() == 1) {
                 Intent intent = new Intent(context, ModeSelection.class);
                 startActivity(intent);
@@ -49,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         } catch(Exception e) {
             Toast.makeText(context, "Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
+        realm.close();
 
     }
 
@@ -79,6 +88,11 @@ public class MainActivity extends AppCompatActivity {
 
         realm.close();
 
+    }
+
+    public void test(View view) {
+        Intent intent = new Intent(this, LeaderBoard.class);
+        startActivity(intent);
     }
 
 }

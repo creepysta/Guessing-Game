@@ -32,8 +32,8 @@ public class LeaderBoardAdapter extends RecyclerView.Adapter<LeaderBoardAdapter.
     public void onBindViewHolder(@NonNull LeaderBoardAdapter.LeaderBoardViewHolder holder, int position) {
         Player player = playerResults.get(position);
         holder.name.setText(player.getName());
-        holder.score.setText(player.getRecentScore());
-        holder.maxScore.setText(player.getMax_score());
+        holder.score.setText(String.valueOf(player.getRecentScore()));
+        holder.maxScore.setText(String.valueOf(player.getMax_score()));
     }
 
     public int getItemCount() {

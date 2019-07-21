@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    >
 
     <ImageView
         android:id="@+id/picture_fragment"
@@ -40,7 +40,7 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="option1"
+            android:text="A. "
             android:layout_weight="1"
 
             />
@@ -48,7 +48,7 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="option1"
+            android:text="B. "
             android:layout_weight="1"
             />
 
@@ -73,14 +73,14 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="option1"
+            android:text="C. "
             android:layout_weight="1"
             />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="option1"
+            android:text="D. "
             android:layout_weight="1"
             />
 

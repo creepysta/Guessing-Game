@@ -1,4 +1,5 @@
 package com.sam.guessinggame;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -50,4 +51,5 @@ public class Player extends RealmObject {
     public void setMax_score(int max_score) {
         this.max_score = max_score;
     }
+
 }

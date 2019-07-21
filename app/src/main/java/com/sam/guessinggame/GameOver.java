@@ -25,10 +25,18 @@ public class GameOver extends AppCompatActivity {
 
     public void playAgain(View view) {
 
+        Intent intent = new Intent(this, ModeSelection.class);
+        startActivity(intent);
+
     }
 
     public void exitGame(View view) {
-        onDestroy();
+
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("exit", true);
+        startActivity(intent);
+
     }
 
     public void leaderBoard(View view) {

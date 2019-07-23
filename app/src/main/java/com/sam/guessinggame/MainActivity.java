@@ -49,6 +49,9 @@ public class MainActivity extends AppCompatActivity {
                                                     .findAll();
             if (playerAccnt.size() == 1) {
                 Intent intent = new Intent(context, ModeSelection.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("name", name_et.getText().toString());
+                intent.putExtra("cred", bundle);
                 startActivity(intent);
             } else {
                 setContentView(R.layout.activity_main);
@@ -79,6 +82,9 @@ public class MainActivity extends AppCompatActivity {
             realm.commitTransaction();
 
             Intent intent = new Intent(context, ModeSelection.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("name", name_et.getText().toString());
+            intent.putExtra("cred", bundle);
             startActivity(intent);
 
         } catch (Exception e) {
@@ -92,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void test(View view) {
         Intent intent = new Intent(this, LeaderBoard.class);
+        intent.putExtra("name", name_et.getText().toString());
         startActivity(intent);
     }
 

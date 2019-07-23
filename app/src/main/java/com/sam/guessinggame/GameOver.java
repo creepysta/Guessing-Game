@@ -8,6 +8,9 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import io.realm.Realm;
+import io.realm.RealmResults;
+
 public class GameOver extends AppCompatActivity {
 
     private TextView yourScore;
@@ -18,15 +21,23 @@ public class GameOver extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.game_over);
+//        int score = getIntent().getBundleExtra("score").getInt("score");
+//        String username = getIntent().getBundleExtra("score").getString("name");
 
         yourScore = findViewById(R.id.your_score_tv);
         highScore = findViewById(R.id.high_score_tv);
+
+//        Player player = Realm.getDefaultInstance().where(Player.class).equalTo("name", username).findFirst();
+//        int maxScore = player.getMax_score();
+//        yourScore.setText(score);
+//        highScore.setText(maxScore);
     }
 
     public void playAgain(View view) {
 
         Intent intent = new Intent(this, ModeSelection.class);
         startActivity(intent);
+//        finish();
 
     }
 

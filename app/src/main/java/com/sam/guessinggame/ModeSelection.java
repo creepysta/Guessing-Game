@@ -19,12 +19,16 @@ public class ModeSelection extends AppCompatActivity {
     }
 
     public void onSelectAnimal(View view) {
+        Bundle cred = getIntent().getBundleExtra("cred");
         Intent intent = new Intent(context, AnimalMode.class);
+        intent.putExtra("cred", cred);
         startActivity(intent);
     }
 
     public void onSelectFlower(View view) {
+        Bundle cred = getIntent().getBundleExtra("cred");
         Intent intent = new Intent(context, FlowerMode.class);
+        intent.putExtra("cred", cred);
         startActivity(intent);
     }
 

@@ -3,6 +3,9 @@ package com.sam.guessinggame;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -11,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GestureDetectorCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -25,6 +29,7 @@ public class AnimalMode extends AppCompatActivity {
 
     private Context context;
 
+    private GestureDetectorCompat detector;
     private ImageView pic;
     private Button op[] = new Button[4];
     private TextView remGuesses;
@@ -32,10 +37,13 @@ public class AnimalMode extends AppCompatActivity {
     String userName;
 
     private int k;
-    private int score;
+    private int score=0;
     private int guesses;
 
     private String options_num[] = {"A. ", "B. ", "C. " , "D. "};
+    private int randomList[] = new int[25];
+    private String userIp = "";
+
 
     private String animalList[] = new String[]{"https://d3td2int7n7fhj.cloudfront.net/sites/default/files/styles/crop_15_10_480x320/public/media/image/2019-03/Ears.jpg?h=b3660f0d&itok=VAccN0j9",
             "https://api.discovery.com/v1/images/5806773e6b66d16e0774d74e?aspectRatio=16x9&width=462&key=3020a40c2356a645b4b4",
@@ -87,9 +95,7 @@ public class AnimalMode extends AppCompatActivity {
             "https://3c1703fe8d.site.internapcdn.net/newman/csz/news/800/2017/endangeredcu.jpg",
             "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Siamcroc.JPG/220px-Siamcroc.JPG",
             "https://live.staticflickr.com/4508/37041005493_373d54450a_b.jpg"};
-    private int randomList[] = new int[25];
-    private String userIp = "";
-    int randomNum;
+
     private String options[][] = new String[][]{{"Lion","Cow","Tiger","Rabbit"},
         {"Lion","Monkey","Rabbit","Tiger"},
         {"Dog","Monkey","Rabbit","Tiger"},
@@ -199,6 +205,7 @@ public class AnimalMode extends AppCompatActivity {
 
         // initialising components
         context = this;
+        detector = new GestureDetectorCompat(this, new GestureListener());
         pic = findViewById(R.id.picture_fragment);
         op[0] = findViewById(R.id.op1);
         op[1] = findViewById(R.id.op2);
@@ -214,17 +221,119 @@ public class AnimalMode extends AppCompatActivity {
         // initialising k, guess and score
         k = 0;
         score = 0;
-        guesses = 3;
-
-//        randomNum = (int) Math.random() % 50;
+        guesses = 5;
 
         // creating the randomList to fetch corresponding pics
         for(int i = 0; i < 25; i++) {
-            randomList[i] = (int) Math.random() % 50;
+            randomList[i] = (int) (Math.random() * animalList.length) % animalList.length;
         }
 
+
+        changeQuestion();
+
+    pic.setOnTouchListener(touchListener);
+
+    }
+
+    View.OnTouchListener touchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            return detector.onTouchEvent(motionEvent);
+        }
+    };
+
+    class GestureListener extends GestureDetector.SimpleOnGestureListener {
+
+        private static final int SWIPE_MIN_DISTANCE = 60;
+        private static final int SWIPE_THRESHOLD_VELOCITY = 100;
+
+
+        @Override
+        public boolean onDown(MotionEvent event) {
+            return true;
+        }
+
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+
+//            if(e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+            if(k < 24 && guesses > 0) {
+                guesses -= 1;
+                k += 1;
+                changeQuestion();
+            } else {
+                gameOver();
+            }
+
+
+                return true;
+//            }
+//            return false;
+        }
+
+
+    }
+
+
+    public void optionA(View view) {
+
+        userIp = options[randomList[k]][0];
+
+        operation(userIp);
+    }
+
+    public void optionB(View view) {
+
+        userIp = options[randomList[k]][1];
+
+        operation(userIp);
+    }
+
+    public void optionC(View view) {
+
+        userIp = options[randomList[k]][2];
+
+        operation(userIp);
+    }
+
+    public void optionD(View view) {
+
+        userIp = options[randomList[k]][3];
+
+        operation(userIp);
+    }
+
+    public void operation(String ip) {
+        if(ans[randomList[k]] == ip) {
+            score += 5;
+        }
+
+        if(k < 24 && guesses > 0) {
+            k++;
+            changeQuestion();
+
+
+        } else {
+            gameOver();
+        }
+
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        Player player = realm.where(Player.class).equalTo("name", userName).findFirst();
+        player.setRecentScore(score);
+        if(player.getRecentScore() > player.getMax_score()) {
+            player.setMax_score(player.getRecentScore());
+        }
+
+        Toast.makeText(this, score + " " + ans[randomList[k]] + " " + k, Toast.LENGTH_SHORT).show();
+        realm.commitTransaction();
+        realm.close();
+    }
+
+    public void changeQuestion() {
         Picasso.get()
-                .load(animalList[2])
+                .load(animalList[randomList[k]])
                 .resize(300,300)
                 .centerCrop()
                 .into(pic);
@@ -237,75 +346,15 @@ public class AnimalMode extends AppCompatActivity {
 
     }
 
-    public void optionA(View view) {
+    public void gameOver() {
 
-        userIp = op[0].getText().toString();
-
-        operation(userIp);
-    }
-
-    public void optionB(View view) {
-
-        userIp = op[1].getText().toString();
-
-        operation(userIp);
-    }
-
-    public void optionC(View view) {
-
-        userIp = op[3].getText().toString();
-
-        operation(userIp);
-    }
-
-    public void optionD(View view) {
-
-        userIp = op[3].getText().toString();
-
-        operation(userIp);
-    }
-
-    public void operation(String ip) {
-        if(ans[randomList[k]] == ip) {
-            score += 5;
-        }
-
-        if(k < 23) {
-            k++;
-//            randomNum = (int) Math.random() % 50;
-            Picasso.get()
-                    .load(animalList[randomList[k]])
-                    .resize(300, 300)
-                    .centerCrop()
-                    .into(pic);
-
-
-            for(int i = 0; i < 4; i++) {
-                op[i].setText(options_num[i] + options[randomList[k]][i]);
-            }
-
-        } else {
-            Intent intent = new Intent(this, GameOver.class);
-            Bundle b = new Bundle();
-            b.putInt("score", score);
-            b.putString("name", userName);
-            intent.putExtra("score",b);
-            startActivity(intent);
-            finish();
-        }
-
-        Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction();
-        Player player = realm.where(Player.class).equalTo("name", userName).findFirst();
-//        playerResults.setValue("recentScore", score);
-        player.setRecentScore(score);
-        if(score > player.getMax_score()) {
-            player.setMax_score(score);
-        }
-
-//        Toast.makeText(this, String.valueOf(randomNum), Toast.LENGTH_SHORT).show();
-
-        realm.close();
+        Intent intent = new Intent(this, GameOver.class);
+        Bundle b = new Bundle();
+        b.putInt("score", score);
+        b.putString("name", userName);
+        intent.putExtras(b);
+        startActivity(intent);
+        finish();
     }
 
 }

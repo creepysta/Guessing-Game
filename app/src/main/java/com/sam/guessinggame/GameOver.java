@@ -21,23 +21,24 @@ public class GameOver extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.game_over);
-//        int score = getIntent().getBundleExtra("score").getInt("score");
-//        String username = getIntent().getBundleExtra("score").getString("name");
+        Bundle b = getIntent().getExtras();
+        int score = b.getInt("score");
+        String username = b.getString("name");
 
         yourScore = findViewById(R.id.your_score_tv);
         highScore = findViewById(R.id.high_score_tv);
 
-//        Player player = Realm.getDefaultInstance().where(Player.class).equalTo("name", username).findFirst();
-//        int maxScore = player.getMax_score();
-//        yourScore.setText(score);
-//        highScore.setText(maxScore);
+        Player player = Realm.getDefaultInstance().where(Player.class).equalTo("name", username).findFirst();
+        int maxScore = player.getMax_score();
+        yourScore.setText(String.valueOf(score));
+        highScore.setText(String.valueOf(maxScore));
     }
 
     public void playAgain(View view) {
 
         Intent intent = new Intent(this, ModeSelection.class);
         startActivity(intent);
-//        finish();
+        finish();
 
     }
 

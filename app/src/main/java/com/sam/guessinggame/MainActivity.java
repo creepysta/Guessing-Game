@@ -96,10 +96,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void test(View view) {
-        Intent intent = new Intent(this, LeaderBoard.class);
-        intent.putExtra("name", name_et.getText().toString());
-        startActivity(intent);
-    }
+//    public void test(View view) {
+//        Intent intent = new Intent(this, LeaderBoard.class);
+//        intent.putExtra("name", name_et.getText().toString());
+//        startActivity(intent);
+//    }
 
 }

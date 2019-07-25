@@ -369,9 +369,7 @@ public class FlowerMode extends AppCompatActivity {
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 
             if(k < 24 && guesses > 0) {
-                if(score >= 5) {
-                    score -= 5;
-                }
+
                 guesses -= 1;
                 k += 1;
                 remGuesses.setText(String.valueOf(guesses));
@@ -432,6 +430,10 @@ public class FlowerMode extends AppCompatActivity {
     public void operation(String ip) {
         if(ans[randomList[k]] == ip) {
             score += 5;
+        } else {
+            if(score >= 5) {
+                score -= 5;
+            }
         }
 
         if(k < 24 && guesses > 0) {
@@ -451,7 +453,7 @@ public class FlowerMode extends AppCompatActivity {
             player.setMax_score(player.getRecentScore());
         }
 
-        Toast.makeText(this, score + " " + ans[randomList[k]] + " " + k, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, score + " " + ans[randomList[k]] + " " + k, Toast.LENGTH_SHORT).show();
         realm.commitTransaction();
         realm.close();
     }

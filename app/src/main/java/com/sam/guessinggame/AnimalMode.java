@@ -37,7 +37,7 @@ public class AnimalMode extends AppCompatActivity {
     String userName;
 
     private int k;
-    private int score=0;
+    private int score;
     private int guesses;
 
     private String options_num[] = {"A. ", "B. ", "C. " , "D. "};
@@ -213,6 +213,7 @@ public class AnimalMode extends AppCompatActivity {
         op[3] = findViewById(R.id.op4);
         remGuesses = findViewById(R.id.rem_guess);
 
+
         // getting user name
         Bundle b = getIntent().getBundleExtra("cred");
         userName = b.getString("name");
@@ -223,6 +224,7 @@ public class AnimalMode extends AppCompatActivity {
         score = 0;
         guesses = 5;
 
+        remGuesses.setText(String.valueOf(guesses));
         // creating the randomList to fetch corresponding pics
         for(int i = 0; i < 25; i++) {
             randomList[i] = (int) (Math.random() * animalList.length) % animalList.length;
@@ -244,10 +246,6 @@ public class AnimalMode extends AppCompatActivity {
 
     class GestureListener extends GestureDetector.SimpleOnGestureListener {
 
-        private static final int SWIPE_MIN_DISTANCE = 60;
-        private static final int SWIPE_THRESHOLD_VELOCITY = 100;
-
-
         @Override
         public boolean onDown(MotionEvent event) {
             return true;
@@ -257,19 +255,33 @@ public class AnimalMode extends AppCompatActivity {
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 
-//            if(e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
             if(k < 24 && guesses > 0) {
+                if(score >= 5) {
+                    score -= 5;
+                }
                 guesses -= 1;
                 k += 1;
+                remGuesses.setText(String.valueOf(guesses));
+
+
+                Realm realm = Realm.getDefaultInstance();
+                realm.beginTransaction();
+                Player player = realm.where(Player.class).equalTo("name", userName).findFirst();
+                player.setRecentScore(score);
+                if(player.getRecentScore() > player.getMax_score()) {
+                    player.setMax_score(player.getRecentScore());
+                }
+                realm.commitTransaction();
+                realm.close();
+
                 changeQuestion();
+
             } else {
                 gameOver();
             }
 
 
-                return true;
-//            }
-//            return false;
+            return true;
         }
 
 
